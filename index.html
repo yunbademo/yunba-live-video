@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Yunba Live Video</title>
+  <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link href="./video-js/video-js.min.css" rel="stylesheet">
+  <style type="text/css">
+    body {
+      background-color: #222222
+    }
+    .no-pading {
+      padding: 0px;
+    }
+  </style>
+
+  <!-- If you'd like to support IE8 -->
+  <script src="./video-js/ie8/videojs-ie8.min.js"></script>
+
+  <script src="https://cdn.bootcss.com/socket.io/1.4.5/socket.io.js"></script>
+  <script src="https://rawgit.com/yunba/yunba-javascript-sdk/master/yunba-js-sdk.js"></script>
+  <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+</head>
+<body>
+  <div class="container-fluid no-pading">
+    <div class="row-fluid no-pading">
+      <div class="col-md-2 col-xs-0 no-pading"></div>
+      <div class="col-md-8 col-xs-12 no-pading">
+        <div id="live-video-container">
+          <video id="live-video" class="video-js vjs-default-skin vjs-big-play-centered" webkit-playsinline>
+            <source src="rtmp://live.lettuceroot.com/yunba/live-demo" type="rtmp/flv">
+            <source src="http://live.lettuceroot.com/yunba/live-demo.m3u8" type="application/x-mpegURL">
+            <p class="vjs-no-js">
+              To view this video please enable JavaScript, and consider upgrading to a web browser that
+              <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+            </p>
+          </video>
+        </div>
+      </div>
+      <div class="col-md-2 col-xs-0"></div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    window.HELP_IMPROVE_VIDEOJS = false;
+    $('#live-video').width($('#live-video-container').width());
+    $('#live-video').height($('#live-video').width() * 9 / 16);
+  </script>
+  <script src="./video-js/video.min.js"></script>
+  <script src="./video-js/videojs-contrib-hls.min.js"></script>
+  <script type="text/javascript">
+    videojs("live-video", { "techOrder": ["flash", "html5"], "controls": "false", "autoplay": "false", "preload": "auto" }, function(){
+      var player = this;
+      player.play();
+    });
+  </script>
+</body>
+</html>
