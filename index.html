@@ -8,8 +8,13 @@
   <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <link href="./video-js/video-js.min.css" rel="stylesheet">
   <style type="text/css">
-    .nopadding {
+    .container-fluid {
       padding: 0px;
+    }
+
+    .my-col {
+      padding: 0px;
+      min-height: 0px;
     }
 
     .row {
@@ -32,22 +37,22 @@
   <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
 </head>
 <body>
-  <div class="container-fluid nopadding">
+  <div class="container-fluid">
 
     <div class="row">
-      <div class="col-lg-2 col-md-1 col-xs-0 nopadding"></div>
-      <div class="col-lg-8 col-md-10 col-xs-12 nopadding">
-        <video id="live-video" class="video-js vjs-default-skin vjs-big-play-centered" webkit-playsinline>
+      <div class="col-lg-2 col-md-1 col-xs-0 my-col"></div>
+      <div class="col-lg-8 col-md-10 col-xs-12 my-col">
+        <video id="live-video" class="video-js vjs-default-skin vjs-big-play-centered" webkit-playsinline style="display: none">
           <source src="rtmp://live.lettuceroot.com/yunba/live-demo" type="rtmp/flv">
           <source src="http://live.lettuceroot.com/yunba/live-demo.m3u8" type="application/x-mpegURL">
         </video>
       </div>
-      <div class="col-lg-2 col-md-1 col-xs-0 nopadding"></div>
+      <div class="col-lg-2 col-md-1 col-xs-0 my-col"></div>
     </div>
 
     <div class="row">
-      <div class="col-lg-2 col-md-1 col-xs-0 nopadding"></div>
-      <div class="col-lg-8 col-md-10 col-xs-0 nopadding">
+      <div class="col-lg-2 col-md-1 col-xs-0 my-col"></div>
+      <div class="col-lg-8 col-md-10 col-xs-0 my-col">
         <div class="panel panel-success">
           <div class="panel-body">
             <form class="form">
@@ -69,12 +74,12 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-2 col-md-1 col-xs-0 nopadding"></div>
+      <div class="col-lg-2 col-md-1 col-xs-0 my-col"></div>
     </div>
 
     <div class="row">
-      <div class="col-lg-2 col-md-1 col-xs-0 nopadding"></div>
-      <div class="col-lg-8 col-md-10 col-xs-0 nopadding">
+      <div class="col-lg-2 col-md-1 col-xs-0 my-col"></div>
+      <div class="col-lg-8 col-md-10 col-xs-0 my-col">
         <div class="panel panel-success">
           <div class="panel-heading">弹幕</div>
           <div class="panel-body">
@@ -87,7 +92,7 @@
                 <option>逆向</option>
               </select>
               <label for="bullet-color">颜色</label>
-              <input id="bullet-color" type="text" class="form-control" value="00FF00">
+              <input id="bullet-color" type="text" class="form-control" value="00ff00">
               <label for="bullet-text">内容</label>
               <input id="bullet-text" type="text" class="form-control" value="Hello World~">
               <button type="button" class="btn btn-danger pull-right my-btn-block">
@@ -99,15 +104,17 @@
         </div>
         
       </div>
-      <div class="col-lg-2 col-md-1 col-xs-0 nopadding"></div>
+      <div class="col-lg-2 col-md-1 col-xs-0 my-col"></div>
     </div>
 
   </div>
 
   <script type="text/javascript">
     window.HELP_IMPROVE_VIDEOJS = false;
-    $('#live-video').css("width","100%");
-    $('#live-video').height($('#live-video').width() * 9 / 16);
+    var v = $('#live-video');
+    v.css("width", "100%");
+    v.height($('#live-video').width() * 9 / 16.0);
+    v.css("display", "block");
   </script>
   <script src="./video-js/video.min.js"></script>
   <script src="./video-js/videojs-contrib-hls.min.js"></script>
