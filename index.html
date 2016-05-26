@@ -8,10 +8,7 @@
   <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <link href="./video-js/video-js.min.css" rel="stylesheet">
   <style type="text/css">
-    body {
-      background-color: #222222
-    }
-    .no-pading {
+    .nopadding {
       padding: 0px;
     }
   </style>
@@ -20,31 +17,80 @@
   <script src="./video-js/ie8/videojs-ie8.min.js"></script>
 
   <script src="https://cdn.bootcss.com/socket.io/1.4.5/socket.io.js"></script>
-  <script src="https://rawgit.com/yunba/yunba-javascript-sdk/master/yunba-js-sdk.js"></script>
+  <!-- <script src="https://rawgit.com/yunba/yunba-javascript-sdk/master/yunba-js-sdk.js"></script> -->
   <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
 </head>
 <body>
-  <div class="container-fluid no-pading">
-    <div class="row-fluid no-pading">
-      <div class="col-md-2 col-xs-0 no-pading"></div>
-      <div class="col-md-8 col-xs-12 no-pading">
-        <div id="live-video-container">
-          <video id="live-video" class="video-js vjs-default-skin vjs-big-play-centered" webkit-playsinline>
-            <source src="rtmp://live.lettuceroot.com/yunba/live-demo" type="rtmp/flv">
-            <source src="http://live.lettuceroot.com/yunba/live-demo.m3u8" type="application/x-mpegURL">
-            <p class="vjs-no-js">
-              To view this video please enable JavaScript, and consider upgrading to a web browser that
-              <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-            </p>
-          </video>
+  <div class="container-fluid">
+
+    <div class="row">
+      <div class="col-md-2 col-xs-0"></div>
+      <div class="col-md-8 col-xs-12">
+        <video id="live-video" class="video-js vjs-default-skin vjs-big-play-centered" webkit-playsinline>
+          <source src="rtmp://live.lettuceroot.com/yunba/live-demo" type="rtmp/flv">
+          <source src="http://live.lettuceroot.com/yunba/live-demo.m3u8" type="application/x-mpegURL">
+        </video>
+      </div>
+      <div class="col-md-2 col-xs-0"></div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-2 col-xs-0"></div>
+      <div class="col-md-8 col-xs-0">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <form class="form-inline">
+              <label>
+                <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                在线人数
+                <span class="badge">0</span>
+              </label>
+              <button type="button" class="btn btn-danger pull-right">
+                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                点赞
+              </button>
+            </form>
+          </div>
         </div>
       </div>
       <div class="col-md-2 col-xs-0"></div>
     </div>
+
+    <div class="row">
+      <div class="col-md-2 col-xs-0"></div>
+      <div class="col-md-8 col-xs-0">
+        <div class="panel panel-default">
+          <div class="panel-heading">弹幕</div>
+          <div class="panel-body">
+            <form class="form-inline">
+              <label for="bullet-type">类型</label>
+              <select id="bullet-type" class="form-control">
+                <option>普通</option>
+                <option>顶端</option>
+                <option>底端</option>
+                <option>逆向</option>
+              </select>
+              <label for="bullet-color">颜色</label>
+              <input id="bullet-color" type="text" class="form-control" value="00FF00">
+              <label for="bullet-text">内容</label>
+              <input id="bullet-text" type="text" class="form-control" value="Hello World~">
+              <button type="button" class="btn btn-danger pull-right">
+                <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+                发送
+              </button>
+            </form>
+          </div>
+        </div>
+        
+      </div>
+      <div class="col-md-2 col-xs-0"></div>
+    </div>
+
   </div>
+
   <script type="text/javascript">
     window.HELP_IMPROVE_VIDEOJS = false;
-    $('#live-video').width($('#live-video-container').width());
+    $('#live-video').css("width","100%");
     $('#live-video').height($('#live-video').width() * 9 / 16);
   </script>
   <script src="./video-js/video.min.js"></script>
