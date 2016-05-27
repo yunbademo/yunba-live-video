@@ -1,7 +1,6 @@
 var APPKEY = '56a0a88c4407a3cd028ac2fe';
 var TOPIC_BULLET = 'bullet'
 var TOPIC_LIKE = 'like'
-var g_sub_ok_cnt = 0;
 
 videojs("live-video", {
   "techOrder": ["flash", "html5"],
@@ -42,40 +41,50 @@ $(document).ready(function() {
         function(success, msg, sessionid) {
           if (success) {
             console.log('sessionid：' + sessionid);
-            yunba.subscribe({
-                'topic': TOPIC_BULLET
-              },
-              function(success, msg) {
-                if (success) {
-                  console.log('subscribed');
-                  g_sub_ok_cnt++;
-                  if (g_sub_ok_cnt >= 2) {
-                    yunba_sub_ok();
-                    // msg_notify('success', '连接服务器成功~');
+            yunba.set_message_cb(yunba_msg_cb);
+            yunba.set_alias({
+              'alias': cid
+            }, function(data) {
+              yunba.subscribe({
+                  'topic': TOPIC_BULLET
+                },
+                function(success, msg) {
+                  if (success) {
+                    console.log('subscribed');
+                    yunba.subscribe_presence({
+                        'topic': TOPIC_BULLET
+                      },
+                      function(success, msg) {
+                        if (success) {
+                          console.log('subscribed');
+                          yunba.subscribe({
+                              'topic': TOPIC_LIKE
+                            },
+                            function(success, msg) {
+                              if (success) {
+                                console.log('subscribed');
+                                yunba_sub_ok();
+                                // msg_notify('success', '连接服务器成功~');
+                              } else {
+                                console.log(msg);
+                                // msg_notify('error', msg);
+                              }
+                            }
+                          );
+                        } else {
+                          console.log(msg);
+                          // msg_notify('error', msg);
+                        }
+                      }
+                    );
+                  } else {
+                    console.log(msg);
+                    // msg_notify('error', msg);
                   }
-                } else {
-                  console.log(msg);
-                  // msg_notify('error', msg);
                 }
-              }
-            );
-            yunba.subscribe({
-                'topic': TOPIC_LIKE
-              },
-              function(success, msg) {
-                if (success) {
-                  console.log('subscribed');
-                  g_sub_ok_cnt++;
-                  if (g_sub_ok_cnt >= 2) {
-                    yunba_sub_ok();
-                    // msg_notify('success', '连接服务器成功~');
-                  }
-                } else {
-                  console.log(msg);
-                  // msg_notify('error', msg);
-                }
-              }
-            );
+              );
+            });
+
           } else {
             console.log(msg);
             // msg_notify('error', msg);
@@ -153,19 +162,31 @@ $('#btn-like').click(function() {
 });
 
 function yunba_msg_cb(data) {
-  if (data.topic == TOPIC_BULLET) {
+  console.log(data);
+  if (data.topic === TOPIC_BULLET) {
     cm.send(JSON.parse(data.msg));
-  } else if (data.topic == TOPIC_LIKE) {
+  } else if (data.topic === TOPIC_LIKE) {
     var num = parseInt($('#like-number').text()) + 1;
     $('#like-number').text(num);
+  } else if (data.topic === TOPIC_BULLET + '/p') {
+    var msg = JSON.parse(data.msg);
+    if (msg.action === 'join') {
+      var num = parseInt($('#online-number').text()) + 1;
+      $('#online-number').text(num);
+    } else if (msg.action === 'offline') {
+      var num = parseInt($('#online-number').text()) - 1;
+      if (num < 1) {
+        num = 1;
+      }
+      $('#online-number').text(num);
+    }
   }
 }
 
 function yunba_sub_ok() {
-  yunba.set_message_cb(yunba_msg_cb);
   $('#span-status').text('连接云巴服务器成功～');
   setTimeout(function() {
     $('#form-status').css("display", "none");
     $('#form-info').css("display", "block");
-  }, 1500);
+  }, 1000);
 }
