@@ -5,8 +5,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Yunba Live Video</title>
-  <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
-  <link href="./video-js/video-js.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="video-js/video-js.min.css">
+  <link rel="stylesheet" href="ccl/style.min.css" />
   <style type="text/css">
     .container-fluid {
       padding: 0px;
@@ -14,27 +15,40 @@
 
     .my-col {
       padding: 0px;
-      min-height: 0px;
     }
 
     .row {
       margin: 0px;
     }
 
-    @media screen and (max-width:767px) {
+    @media screen and (max-width: 991px) {
+      .my-col {
+        padding: 0px;
+        min-height: 0px;
+      }
+    }
+
+    @media screen and (max-width: 767px) {
       .my-btn-block {
         margin-top: 3px;
         width: 100%;
       }
+
+      .my-col {
+        padding: 0px;
+        min-height: 0px;
+      }
     }
   </style>
 
-  <!-- If you'd like to support IE8 -->
-  <script src="./video-js/ie8/videojs-ie8.min.js"></script>
+  <script src="//cdn.bootcss.com/socket.io/1.4.5/socket.io.js"></script>
+  <script src="https://rawgit.com/yunba/yunba-javascript-sdk/master/yunba-js-sdk.js"></script>
+  <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
 
-  <script src="https://cdn.bootcss.com/socket.io/1.4.5/socket.io.js"></script>
-  <!-- <script src="https://rawgit.com/yunba/yunba-javascript-sdk/master/yunba-js-sdk.js"></script> -->
-  <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+  <!-- If you'd like to support IE8 -->
+  <script src="video-js/ie8/videojs-ie8.min.js"></script>
+
+  <script src="ccl/CommentCoreLibrary.min.js"></script>
 </head>
 <body>
   <div class="container-fluid">
@@ -42,10 +56,13 @@
     <div class="row">
       <div class="col-lg-2 col-md-1 col-xs-0 my-col"></div>
       <div class="col-lg-8 col-md-10 col-xs-12 my-col">
-        <video id="live-video" class="video-js vjs-default-skin vjs-big-play-centered" webkit-playsinline style="display: none">
-          <source src="rtmp://live.lettuceroot.com/yunba/live-demo" type="rtmp/flv">
-          <source src="http://live.lettuceroot.com/yunba/live-demo.m3u8" type="application/x-mpegURL">
-        </video>
+        <div id='my-player' class='abp'>
+          <div id='my-comment-stage' class='container'></div>
+          <video id="live-video" class="video-js vjs-default-skin vjs-big-play-centered" webkit-playsinline style="display: none">
+            <source src="rtmp://live.lettuceroot.com/yunba/live-demo" type="rtmp/flv">
+            <source src="http://live.lettuceroot.com/yunba/live-demo.m3u8" type="application/x-mpegURL">
+          </video>
+        </div>
       </div>
       <div class="col-lg-2 col-md-1 col-xs-0 my-col"></div>
     </div>
@@ -56,6 +73,10 @@
         <div class="panel panel-success">
           <div class="panel-body">
             <form class="form">
+              <!-- <button type="button" class="btn btn-success disabled my-btn-block">
+                <span class="glyphicon glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                正在连接云巴服务器
+              </button> -->
               <button type="button" class="btn btn-success disabled my-btn-block">
                 <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                 在线
@@ -64,9 +85,13 @@
               <button type="button" class="btn btn-success disabled my-btn-block">
                 <span class="glyphicon glyphicon-heart-empty" aria-hidden="true"></span>
                 获赞
-                <span class="badge">0</span>
+                <span id="like-number" class="badge">0</span>
               </button>
-              <button type="button" class="btn btn-danger pull-right my-btn-block">
+              <!-- <a class="btn btn-danger my-btn-block" href="https://github.com/yunbademo/yunba-live-video" role="button">
+                <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+                GitHub
+              </a> -->
+              <button id="btn-like" type="button" class="btn btn-danger pull-right my-btn-block">
                 <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
                 点赞
               </button>
@@ -86,16 +111,17 @@
             <form class="form-inline">
               <label for="bullet-type">类型</label>
               <select id="bullet-type" class="form-control">
-                <option>普通</option>
-                <option>顶端</option>
-                <option>底端</option>
-                <option>逆向</option>
+                <option>上端滚动</option>
+                <option>下端滚动</option>
+                <option>顶部固定</option>
+                <option>底部固定</option>
+                <option>逆向弹幕</option>
               </select>
               <label for="bullet-color">颜色</label>
               <input id="bullet-color" type="text" class="form-control" value="00ff00">
               <label for="bullet-text">内容</label>
               <input id="bullet-text" type="text" class="form-control" value="Hello World~">
-              <button type="button" class="btn btn-danger pull-right my-btn-block">
+              <button id="btn-send" type="button" class="btn btn-danger pull-right my-btn-block">
                 <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
                 发送
               </button>
@@ -107,22 +133,22 @@
       <div class="col-lg-2 col-md-1 col-xs-0 my-col"></div>
     </div>
 
+
+
   </div>
 
   <script type="text/javascript">
     window.HELP_IMPROVE_VIDEOJS = false;
-    var v = $('#live-video');
-    v.css("width", "100%");
-    v.height($('#live-video').width() * 9 / 16.0);
-    v.css("display", "block");
+    var video = $('#live-video');
+    var bullet = $('#my-comment-stage');
+    video.css("width", "100%");
+    video.height($('#live-video').width() * 9 / 16.0);
+    video.css("display", "block");
+
+    bullet.css("width", "100%");
   </script>
-  <script src="./video-js/video.min.js"></script>
-  <script src="./video-js/videojs-contrib-hls.min.js"></script>
-  <script type="text/javascript">
-    videojs("live-video", { "techOrder": ["flash", "html5"], "controls": "false", "autoplay": "false", "preload": "auto" }, function(){
-      var player = this;
-      player.play();
-    });
-  </script>
+  <script src="video-js/video.min.js"></script>
+  <script src="video-js/videojs-contrib-hls.min.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
