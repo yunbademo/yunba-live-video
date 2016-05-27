@@ -1,6 +1,7 @@
 var APPKEY = '56a0a88c4407a3cd028ac2fe';
 var TOPIC_BULLET = 'bullet'
 var TOPIC_LIKE = 'like'
+var g_sub_ok_cnt = 0;
 
 videojs("live-video", {
   "techOrder": ["flash", "html5"],
@@ -47,7 +48,11 @@ $(document).ready(function() {
               function(success, msg) {
                 if (success) {
                   console.log('subscribed');
-                  // msg_notify('success', '连接服务器成功~');
+                  g_sub_ok_cnt++;
+                  if (g_sub_ok_cnt >= 2) {
+                    yunba_sub_ok();
+                    // msg_notify('success', '连接服务器成功~');
+                  }
                 } else {
                   console.log(msg);
                   // msg_notify('error', msg);
@@ -60,8 +65,11 @@ $(document).ready(function() {
               function(success, msg) {
                 if (success) {
                   console.log('subscribed');
-                  // msg_notify('success', '连接服务器成功~');
-                  yunba.set_message_cb(yunba_msg_cb);
+                  g_sub_ok_cnt++;
+                  if (g_sub_ok_cnt >= 2) {
+                    yunba_sub_ok();
+                    // msg_notify('success', '连接服务器成功~');
+                  }
                 } else {
                   console.log(msg);
                   // msg_notify('error', msg);
@@ -90,19 +98,19 @@ $('#btn-send').click(function() {
   var mode = 1;
   switch ($('#bullet-type').prop('selectedIndex')) {
     case 0:
-      mode = 1;
-      break;
-
-    case 1:
       mode = 2;
       break;
 
+    case 1:
+      mode = 1;
+      break;
+
     case 2:
-      mode = 5;
+      mode = 4;
       break;
 
     case 3:
-      mode = 4;
+      mode = 5;
       break;
 
     case 4:
@@ -151,4 +159,13 @@ function yunba_msg_cb(data) {
     var num = parseInt($('#like-number').text()) + 1;
     $('#like-number').text(num);
   }
+}
+
+function yunba_sub_ok() {
+  yunba.set_message_cb(yunba_msg_cb);
+  $('#span-status').text('连接云巴服务器成功～');
+  setTimeout(function() {
+    $('#form-status').css("display", "none");
+    $('#form-info').css("display", "block");
+  }, 1500);
 }

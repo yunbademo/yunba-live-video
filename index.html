@@ -39,6 +39,31 @@
         min-height: 0px;
       }
     }
+
+    .glyphicon-spin {
+      -webkit-animation: spin 1500ms infinite linear;
+      animation: spin 1500ms infinite linear;
+    }
+    @-webkit-keyframes spin {
+      0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+      }
+      100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+      }
+    }
+    @keyframes spin {
+      0% {
+      -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+      }
+      100% {
+      -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+      }
+    }
   </style>
 
   <script src="//cdn.bootcss.com/socket.io/1.4.5/socket.io.js"></script>
@@ -72,11 +97,13 @@
       <div class="col-lg-8 col-md-10 col-xs-0 my-col">
         <div class="panel panel-success">
           <div class="panel-body">
-            <form class="form">
-              <!-- <button type="button" class="btn btn-success disabled my-btn-block">
-                <span class="glyphicon glyphicon glyphicon-refresh" aria-hidden="true"></span>
-                正在连接云巴服务器
-              </button> -->
+            <form id="form-status" class="form">
+              <button type="button" class="btn btn-success disabled my-btn-block">
+                <span class="glyphicon glyphicon-refresh glyphicon-spin" aria-hidden="true"></span>
+                <span id="span-status">正在连接云巴服务器...</span>
+              </button>
+            </form>
+            <form id="form-info" class="form" style="display: none">
               <button type="button" class="btn btn-success disabled my-btn-block">
                 <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                 在线
@@ -87,10 +114,6 @@
                 获赞
                 <span id="like-number" class="badge">0</span>
               </button>
-              <!-- <a class="btn btn-danger my-btn-block" href="https://github.com/yunbademo/yunba-live-video" role="button">
-                <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-                GitHub
-              </a> -->
               <button id="btn-like" type="button" class="btn btn-danger pull-right my-btn-block">
                 <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
                 点赞
@@ -111,29 +134,33 @@
             <form class="form-inline">
               <label for="bullet-type">类型</label>
               <select id="bullet-type" class="form-control">
-                <option>上端滚动</option>
                 <option>下端滚动</option>
-                <option>顶部固定</option>
+                <option>上端滚动</option>
                 <option>底部固定</option>
+                <option>顶部固定</option>
                 <option>逆向弹幕</option>
               </select>
               <label for="bullet-color">颜色</label>
-              <input id="bullet-color" type="text" class="form-control" value="00ff00">
+              <input id="bullet-color" type="text" class="form-control" value="ff0000">
               <label for="bullet-text">内容</label>
-              <input id="bullet-text" type="text" class="form-control" value="Hello World~">
+              <input id="bullet-text" type="text" class="form-control" value="Hello Yunba~">
               <button id="btn-send" type="button" class="btn btn-danger pull-right my-btn-block">
                 <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
                 发送
               </button>
             </form>
           </div>
+          <div class="panel-footer">
+            <a href="http://yunba.io/">云巴</a>
+            -
+            <a href="https://github.com/yunbademo/yunba-live-video">
+              GitHub
+            </a>
+          </div>
         </div>
-        
       </div>
       <div class="col-lg-2 col-md-1 col-xs-0 my-col"></div>
     </div>
-
-
 
   </div>
 
