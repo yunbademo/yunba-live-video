@@ -2,17 +2,17 @@ var APPKEY = '56a0a88c4407a3cd028ac2fe';
 var TOPIC_BULLET = 'bullet'
 var TOPIC_LIKE = 'like'
 
-videojs("live-video", {
-  "techOrder": ["flash", "html5"],
-  "controls": "false",
-  "autoplay": "false",
-  "preload": "auto"
-}, function() {
-  var player = this;
-  player.play();
-});
-
 $(document).ready(function() {
+  videojs("live-video", {
+    "techOrder": ["flash", "html5"],
+    "controls": "false",
+    "autoplay": "false",
+    "preload": "auto"
+  }, function() {
+    var player = this;
+    player.play();
+  });
+
   var cm = new CommentManager(document.getElementById('my-comment-stage'));
   cm.init();
   cm.start();
@@ -33,30 +33,43 @@ $(document).ready(function() {
     appkey: APPKEY
   });
 
+  // 初始化云巴 SDK
   yunba.init(function(success) {
     if (success) {
       var cid = Math.random().toString().substr(2);
       console.log('cid: ' + cid);
+
+      // 连接云巴服务器
       yunba.connect_by_customid(cid,
         function(success, msg, sessionid) {
           if (success) {
             console.log('sessionid：' + sessionid);
+
+            // 设置收到信息回调函数
             yunba.set_message_cb(yunba_msg_cb);
+
+            // 设置别名
             yunba.set_alias({
               'alias': cid
             }, function(data) {
+
+              // 订阅弹幕 TOPIC
               yunba.subscribe({
                   'topic': TOPIC_BULLET
                 },
                 function(success, msg) {
                   if (success) {
                     console.log('subscribed');
+
+                    // 订阅弹幕 TOPIC 下的实时在线信息
                     yunba.subscribe_presence({
                         'topic': TOPIC_BULLET
                       },
                       function(success, msg) {
                         if (success) {
                           console.log('subscribed');
+
+                          // 订阅点赞 TOPIC
                           yunba.subscribe({
                               'topic': TOPIC_LIKE
                             },
@@ -96,12 +109,6 @@ $(document).ready(function() {
     }
   });
 });
-
-function process_data(data) {
-  // console.log(data.msg);
-  var xys = JSON.parse(data.msg);
-  // cm.send(bullet);
-}
 
 $('#btn-send').click(function() {
   var mode = 1;
@@ -162,7 +169,7 @@ $('#btn-like').click(function() {
 });
 
 function yunba_msg_cb(data) {
-  console.log(data);
+  // console.log(data);
   if (data.topic === TOPIC_BULLET) {
     cm.send(JSON.parse(data.msg));
   } else if (data.topic === TOPIC_LIKE) {
@@ -190,3 +197,8 @@ function yunba_sub_ok() {
     $('#form-info').css("display", "block");
   }, 1000);
 }
+
+// $('#my-comment-stage').on("touchstart mousedown", function(e) {
+//   console.log(e);
+//   $('#live-video').triggerHandler(e);
+// });
