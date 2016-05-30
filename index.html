@@ -13,6 +13,10 @@
       padding: 0px;
     }
 
+    .container {
+      padding: 0px;
+    }
+
     .my-col {
       padding: 0px;
     }
@@ -82,11 +86,12 @@
       <div class="col-lg-2 col-md-1 col-xs-0 my-col"></div>
       <div class="col-lg-8 col-md-10 col-xs-12 my-col">
         <div id='my-player' class='abp'>
-          <div id='my-comment-stage' class='container'></div>
+          <div id='my-comment-stage' class='container'>
           <video id="live-video" class="video-js vjs-default-skin vjs-big-play-centered" webkit-playsinline style="display: none">
             <source src="rtmp://live.lettuceroot.com/yunba/live-demo" type="rtmp/flv">
             <source src="http://live.lettuceroot.com/yunba/live-demo.m3u8" type="application/x-mpegURL">
           </video>
+          </div>
         </div>
       </div>
       <div class="col-lg-2 col-md-1 col-xs-0 my-col"></div>
@@ -166,13 +171,18 @@
 
   <script type="text/javascript">
     window.HELP_IMPROVE_VIDEOJS = false;
-    var video = $('#live-video');
+    var player = $('#my-player');
     var bullet = $('#my-comment-stage');
-    video.css("width", "100%");
-    video.height($('#live-video').width() * 9 / 16.0);
-    video.css("display", "block");
+    player.css("width", "100%");
+    player.height(player.width() * 9 / 16.0);
 
     bullet.css("width", "100%");
+
+    var video = $('#live-video');
+    video.width(player.width());
+    video.height(player.height());
+    video.css("display", "block");
+
   </script>
   <script src="video-js/video.min.js"></script>
   <script src="video-js/videojs-contrib-hls.min.js"></script>
