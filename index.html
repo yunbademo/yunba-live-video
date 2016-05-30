@@ -25,14 +25,24 @@
       margin: 0px;
     }
 
-    @media screen and (max-width: 991px) {
+    @media (min-width: 768px) {
+      #bullet-color, #bullet-dur {
+          width: 96px;
+      }
+
+      #bullet-text {
+          width: 192px;
+      }
+    }
+
+    @media (max-width: 991px) {
       .my-col {
         padding: 0px;
         min-height: 0px;
       }
     }
 
-    @media screen and (max-width: 767px) {
+    @media (max-width: 767px) {
       .my-btn-block {
         margin-top: 3px;
         width: 100%;
@@ -147,6 +157,8 @@
               </select>
               <label for="bullet-color">颜色</label>
               <input id="bullet-color" type="text" class="form-control" value="ff0000">
+              <label for="bullet-dur">时长</label>
+              <input id="bullet-dur" type="text" class="form-control" value="4000">
               <label for="bullet-text">内容</label>
               <input id="bullet-text" type="text" class="form-control" value="Hello Yunba~">
               <button id="btn-send" type="button" class="btn btn-danger pull-right my-btn-block">
@@ -171,18 +183,6 @@
 
   <script type="text/javascript">
     window.HELP_IMPROVE_VIDEOJS = false;
-    var player = $('#my-player');
-    var bullet = $('#my-comment-stage');
-    player.css("width", "100%");
-    player.height(player.width() * 9 / 16.0);
-
-    bullet.css("width", "100%");
-
-    var video = $('#live-video');
-    video.width(player.width());
-    video.height(player.height());
-    video.css("display", "block");
-
   </script>
   <script src="video-js/video.min.js"></script>
   <script src="video-js/videojs-contrib-hls.min.js"></script>

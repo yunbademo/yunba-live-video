@@ -2,7 +2,30 @@ var APPKEY = '56a0a88c4407a3cd028ac2fe';
 var TOPIC_BULLET = 'bullet'
 var TOPIC_LIKE = 'like'
 
+function set_layout() {
+  var player = $('#my-player');
+  var bullet = $('#my-comment-stage');
+  player.css("width", "100%");
+  player.height(player.width() * 9 / 16.0);
+
+  bullet.css("width", "100%");
+
+  var video = $('#live-video');
+  video.width(player.width());
+  video.height(player.height());
+  video.css("display", "block");
+
+  var cm = new CommentManager(document.getElementById('my-comment-stage'));
+  cm.init();
+  cm.start();
+
+  window.cm = cm;
+}
+
 $(document).ready(function() {
+  window.onresize = set_layout;
+  set_layout();
+
   videojs("live-video", {
     "techOrder": ["flash", "html5"],
     "controls": "false",
@@ -12,12 +35,6 @@ $(document).ready(function() {
     var player = this;
     player.play();
   });
-
-  var cm = new CommentManager(document.getElementById('my-comment-stage'));
-  cm.init();
-  cm.start();
-
-  window.cm = cm;
 
   // var bullet = {
   //   "mode": 1,
@@ -175,6 +192,7 @@ function yunba_msg_cb(data) {
   } else if (data.topic === TOPIC_LIKE) {
     var num = parseInt($('#like-number').text()) + 1;
     $('#like-number').text(num);
+    show_like_animate();
   } else if (data.topic === TOPIC_BULLET + '/p') {
     var msg = JSON.parse(data.msg);
     if (msg.action === 'join') {
@@ -198,7 +216,19 @@ function yunba_sub_ok() {
   }, 1000);
 }
 
-// $('#my-comment-stage').on("touchstart mousedown", function(e) {
-//   console.log(e);
-//   $('#live-video').triggerHandler(e);
-// });
+function show_like_animate() {
+  var bullet = {
+    "mode": 4,
+    "text": "like",
+    "color": 0xff0000,
+    "dur": 10000
+  };
+
+  cm.send(bullet);
+}
+
+
+// ❤ ❤ ♬ ♬
+// <d p="147.80000305176,7,24,6736896,1340976721,1,9bd49c01,104077707">
+// ["390","87","1-0","1.5","♬","0","0","425","122","1500","0","false","宋体","0"]
+// </d>
