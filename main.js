@@ -194,7 +194,7 @@ $('#btn-like').click(function() {
 });
 
 function yunba_msg_cb(data) {
-  console.log(data);
+  // console.log(data);
   if (data.topic === TOPIC_BULLET) {
     // 弹幕
     cm.send(JSON.parse(data.msg));
