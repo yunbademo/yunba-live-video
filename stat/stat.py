@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#-*- coding: utf-8 -*-
 
 import os
 import sys
@@ -11,9 +12,10 @@ logger = logging.getLogger('stat')
 logging.basicConfig(level=logging.DEBUG)
 
 APPKEY = '56a0a88c4407a3cd028ac2fe'
-TOPIC_PRESENCE = 'bullet/p'
+TOPIC_PRESENCE = 'like/p'
 TOPIC_LIKE = 'like'
-ALIAS = 'stat'
+TOPIC_STAT = 'stat'
+ALIAS = 'stat_agent'
 
 class Stat(Messenger):
 
@@ -47,11 +49,17 @@ class Stat(Messenger):
             if msg['alias'] != self.alias:
                 if msg['action'] == 'join':
                     self.data['presence'] += 1
+                    # 发初始信息给上线的客户端
                     self.publish_to_alias(msg['alias'], json.dumps(self.data))
                 elif msg['action'] == 'offline':
                     self.data['presence'] -= 1
+
+                # 广播统计信息
+                # 之所以要广播在线信息而不是像点赞那样由客户端自己订阅 presence, 是因为客户端订阅 presence 后下线，其他客户端会收到 2 次 offline 消息
+                self.publish(json.dumps(self.data), TOPIC_STAT, 1)
+
                 self.write_data()
-            self.__logger.debug(self.data)
+                self.__logger.debug(self.data)
         elif args['topic'] == TOPIC_LIKE:
             self.data['like'] += 1
             self.write_data()

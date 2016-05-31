@@ -1,6 +1,7 @@
 var APPKEY = '56a0a88c4407a3cd028ac2fe';
 var TOPIC_BULLET = 'bullet';
 var TOPIC_LIKE = 'like';
+var TOPIC_STAT = 'stat';
 var TEXTS = ['♪', '♩', '♭', '♬'];
 
 function init() {
@@ -85,17 +86,17 @@ $(document).ready(function() {
                   if (success) {
                     console.log('subscribed');
 
-                    // 订阅弹幕 TOPIC 下的实时在线信息
-                    yunba.subscribe_presence({
-                        'topic': TOPIC_BULLET
+                    // 订阅点赞 TOPIC
+                    yunba.subscribe({
+                        'topic': TOPIC_LIKE
                       },
                       function(success, msg) {
                         if (success) {
                           console.log('subscribed');
 
-                          // 订阅点赞 TOPIC
+                          // 订阅统计信息 TOPIC
                           yunba.subscribe({
-                              'topic': TOPIC_LIKE
+                              'topic': TOPIC_STAT
                             },
                             function(success, msg) {
                               if (success) {
@@ -193,7 +194,7 @@ $('#btn-like').click(function() {
 });
 
 function yunba_msg_cb(data) {
-  // console.log(data);
+  console.log(data);
   if (data.topic === TOPIC_BULLET) {
     // 弹幕
     cm.send(JSON.parse(data.msg));
@@ -202,21 +203,11 @@ function yunba_msg_cb(data) {
     var num = parseInt($('#like-number').text()) + 1;
     $('#like-number').text(num);
     show_like_animate();
-  } else if (data.topic === TOPIC_BULLET + '/p') {
+  } else if (data.topic === TOPIC_STAT) {
     // 在线信息
     var msg = JSON.parse(data.msg);
-    if (msg.action === 'join') {
-      // console.log('join');
-      var num = parseInt($('#online-number').text()) + 1;
-      $('#online-number').text(num);
-    } else if (msg.action === 'offline') {
-      // console.log('offline');
-      var num = parseInt($('#online-number').text()) - 1;
-      if (num < 0) {
-        num = 0;
-      }
-      $('#online-number').text(num);
-    }
+    var num = msg.presence;
+    $('#online-number').text(num);
   } else if (data.topic === alias) {
     // 初始在线和点赞信息
     var msg = JSON.parse(data.msg);
