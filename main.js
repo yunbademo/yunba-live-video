@@ -61,6 +61,7 @@ $(document).ready(function() {
     if (success) {
       var cid = Math.random().toString().substr(2);
       console.log('cid: ' + cid);
+      window.alias = cid;
 
       // 连接云巴服务器
       yunba.connect_by_customid(cid,
@@ -73,7 +74,7 @@ $(document).ready(function() {
 
             // 设置别名
             yunba.set_alias({
-              'alias': cid
+              'alias': alias
             }, function(data) {
 
               // 订阅弹幕 TOPIC
@@ -194,23 +195,36 @@ $('#btn-like').click(function() {
 function yunba_msg_cb(data) {
   // console.log(data);
   if (data.topic === TOPIC_BULLET) {
+    // 弹幕
     cm.send(JSON.parse(data.msg));
   } else if (data.topic === TOPIC_LIKE) {
+    // 点赞
     var num = parseInt($('#like-number').text()) + 1;
     $('#like-number').text(num);
     show_like_animate();
   } else if (data.topic === TOPIC_BULLET + '/p') {
+    // 在线信息
     var msg = JSON.parse(data.msg);
     if (msg.action === 'join') {
+      // console.log('join');
       var num = parseInt($('#online-number').text()) + 1;
       $('#online-number').text(num);
     } else if (msg.action === 'offline') {
+      // console.log('offline');
       var num = parseInt($('#online-number').text()) - 1;
-      if (num < 1) {
-        num = 1;
+      if (num < 0) {
+        num = 0;
       }
       $('#online-number').text(num);
     }
+  } else if (data.topic === alias) {
+    // 初始在线和点赞信息
+    var msg = JSON.parse(data.msg);
+    var num = parseInt($('#online-number').text()) + msg.presence;
+    $('#online-number').text(num);
+
+    num = parseInt($('#like-number').text()) + msg.like;
+    $('#like-number').text(num);
   }
 }
 
@@ -228,7 +242,7 @@ function show_like_animate() {
   var y = cm_height * 7 / 8;
 
   var text = TEXTS[Math.floor(Math.random() * TEXTS.length)];
-  var color = Math.floor(Math.random() * 0xffffff);
+  var color = 0xf0f0f0 + Math.floor(Math.random() * 0x0f0f0f);
 
   var bullet = {
     "stime": 0,
