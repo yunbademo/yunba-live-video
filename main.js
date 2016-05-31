@@ -1,8 +1,9 @@
 var APPKEY = '56a0a88c4407a3cd028ac2fe';
-var TOPIC_BULLET = 'bullet'
-var TOPIC_LIKE = 'like'
+var TOPIC_BULLET = 'bullet';
+var TOPIC_LIKE = 'like';
+var TEXTS = ['♪', '♩', '♭', '♬'];
 
-function set_layout() {
+function init() {
   var player = $('#my-player');
   var bullet = $('#my-comment-stage');
   player.css("width", "100%");
@@ -20,11 +21,16 @@ function set_layout() {
   cm.start();
 
   window.cm = cm;
+  window.cm_width = bullet.width();
+  window.cm_height = bullet.height();
 }
 
 $(document).ready(function() {
-  window.onresize = set_layout;
-  set_layout();
+
+  $('#span-status').text('正在连接云巴服务器...');
+
+  window.onresize = init;
+  init();
 
   videojs("live-video", {
     "techOrder": ["flash", "html5"],
@@ -213,22 +219,56 @@ function yunba_sub_ok() {
   setTimeout(function() {
     $('#form-status').css("display", "none");
     $('#form-info').css("display", "block");
+    $('#btn-send').attr("disabled", false);
   }, 1000);
 }
 
 function show_like_animate() {
+  var x = cm_width * 9 / 10;
+  var y = cm_height * 7 / 8;
+
+  var text = TEXTS[Math.floor(Math.random() * TEXTS.length)];
+  var color = Math.floor(Math.random() * 0xffffff);
+
   var bullet = {
-    "mode": 4,
-    "text": "like",
-    "color": 0xff0000,
-    "dur": 10000
+    "stime": 0,
+    "size": 32,
+    "color": color,
+    "mode": 7,
+    "pool": 1,
+    "position": "absolute",
+    "dbid": 104079685,
+    "hash": "9bd49c01",
+    "border": false,
+    "shadow": false,
+    "x": x,
+    "y": y,
+    "text": text,
+    "rZ": 0,
+    "rY": 0,
+    "motion": [{
+      "x": {
+        "from": x,
+        "to": x,
+        "dur": 1500,
+        "delay": 0
+      },
+      "y": {
+        "from": y,
+        "to": y - cm_height / 2,
+        "dur": 1500,
+        "delay": 0
+      }
+    }],
+    "movable": true,
+    "font": "宋体",
+    "dur": 1500,
+    "opacity": 1,
+    "alpha": {
+      "from": 1,
+      "to": 0
+    }
   };
 
   cm.send(bullet);
 }
-
-
-// ❤ ❤ ♬ ♬
-// <d p="147.80000305176,7,24,6736896,1340976721,1,9bd49c01,104077707">
-// ["390","87","1-0","1.5","♬","0","0","425","122","1500","0","false","宋体","0"]
-// </d>
