@@ -160,11 +160,13 @@ $('#btn-send').click(function() {
   }
   var text = $('#bullet-text').val();
   var color = parseInt('0x' + $('#bullet-color').val());
+  var dur = parseInt($('#bullet-dur').val());
 
   var bullet = {
     "mode": mode,
     "text": text,
-    "color": color
+    "color": color,
+    "dur": dur
   };
   // console.log(bullet);
   // cm.send(bullet);
