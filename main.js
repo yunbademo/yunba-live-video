@@ -214,7 +214,7 @@ function yunba_msg_cb(data) {
     var num = parseInt($('#online-number').text()) + msg.presence;
     $('#online-number').text(num);
 
-    num = parseInt($('#like-number').text()) + msg.like;
+    num = msg.like;
     $('#like-number').text(num);
   }
 }
