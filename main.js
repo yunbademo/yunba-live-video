@@ -17,6 +17,12 @@ function init() {
   video.height(player.height());
   video.css("display", "block");
 
+  // videojs 生成的 video 标签，若不调整横竖屏切换时视频会不满或溢出
+  video = $('#live-video_html5_api');
+  video.width(player.width());
+  video.height(player.height());
+  video.css("display", "block");
+
   var cm = new CommentManager(document.getElementById('my-comment-stage'));
   cm.init();
   cm.start();
@@ -36,7 +42,7 @@ $(document).ready(function() {
   videojs("live-video", {
     "techOrder": ["flash", "html5"],
     "controls": "false",
-    "autoplay": "false",
+    "autoplay": "true",
     "preload": "auto"
   }, function() {
     var player = this;
